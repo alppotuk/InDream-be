@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("InDream")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4a6e1b86cd6ddcbef7401b21220fddfe380dc1e1")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b4552c49616a1a169eb61c10ffe1af5c793e51bc")]
 [assembly: System.Reflection.AssemblyProductAttribute("InDream")]
 [assembly: System.Reflection.AssemblyTitleAttribute("InDream")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
