@@ -1,11 +1,20 @@
 ﻿using InDream.Enumeration;
+using InDream.Interfaces;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using System.ComponentModel.DataAnnotations;
 
 namespace InDream.Data
 {
-    public class Account
+    public class Account : Entity
     {
-        public long Id { get; set; }
+        public string GoogleId { get; set; }
+        public string Email { get; set; }
         public string Username { get; set; }
-        public SubscriptionTierEnum SubscriptionTier { get; set; } = SubscriptionTierEnum.Free;
+        public SubscriptionTierEnum SubscriptionTier { get; set; }
+        public DateTime? SubscriptionExpiryDate { get; set; }
+
+       
+
+        public IList<TrackedItem> TrackedItems { get; set; }    
     }
 }

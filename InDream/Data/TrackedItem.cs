@@ -1,12 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using InDream.Interfaces;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace InDream.Data
 {
-    public class TrackedItem
+    public class TrackedItem : Entity
     {
-        [Key]
-        public long Id { get; set; }
         public long AccountId { get; set; }
         [ForeignKey("AccountId")]
         public Account Account { get; set; }
@@ -30,12 +29,11 @@ namespace InDream.Data
         [MaxLength(50)]
         public string? PriceCssSelector { get; set; }
         [MaxLength(50)]
-        public string? StockTextCssSelector { get; set; 
+        public string? StockTextCssSelector { get; set; }
 
         public DateTime LastTimeChecked { get; set; }
 
         public bool IsActive { get; set; }
 
-        public DateTime CreationDateUtc { get; set; }
     }
 }

@@ -5,7 +5,7 @@ namespace InDream.Controllers
 {
     [Route("[controller]/[action]")]
     [ApiController]
-    public class ValuesController : ControllerBase
+    public class AuthenticationController : ControllerBase
     {
     }
 }
