@@ -1,7 +1,5 @@
 ﻿using InDream.Enumeration;
 using InDream.Interfaces;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
-using System.ComponentModel.DataAnnotations;
 
 namespace InDream.Data
 {
