@@ -2,7 +2,7 @@
 
 namespace InDream.Interfaces
 {
-    public class Entity
+    public class EntityBase
     {
         [Key]
         public long Id { get; set; }
@@ -10,7 +10,7 @@ namespace InDream.Interfaces
 
        
 
-        public Entity()
+        public EntityBase()
         {
             CreationDateUtc = DateTime.UtcNow;
         }

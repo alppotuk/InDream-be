@@ -2,7 +2,7 @@
 
 namespace InDream.Data
 {
-    public class SupportedSite : Entity
+    public class SupportedSite : EntityBase
     {
         public string Domain { get; set; } 
         public string TitleSelector { get; set; }

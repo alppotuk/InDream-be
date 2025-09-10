@@ -1,5 +1,6 @@
 
 
+using AngleSharp;
 using InDream.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -65,6 +66,13 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
+builder.Services.AddScoped<IBrowsingContext>(provider =>
+{
+    var config = Configuration.Default.WithDefaultLoader();
+    return BrowsingContext.New(config);
+});
+
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -75,8 +83,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthentication();
-app.UseAuthorization();
+//app.UseAuthentication();
+//app.UseAuthorization();
 
 app.MapControllers();
 

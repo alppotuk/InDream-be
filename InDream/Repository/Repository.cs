@@ -2,7 +2,7 @@
 using InDream.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-public class Repository<T> : IRepository<T> where T : Entity
+public class Repository<T> : IRepository<T> where T : EntityBase
 {
     private readonly DataContext _context;
     private readonly DbSet<T> _dbSet;

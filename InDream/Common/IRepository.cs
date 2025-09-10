@@ -1,7 +1,7 @@
 ﻿using InDream.Interfaces;
 using System.Linq.Expressions;
 
-public interface IRepository<T> where T : Entity
+public interface IRepository<T> where T : EntityBase
 {
     IQueryable<T> Table { get; }
 

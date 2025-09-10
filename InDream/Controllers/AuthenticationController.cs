@@ -24,17 +24,17 @@ public class AuthenticationController : ControllerBase
 
     [HttpPost]
     [AllowAnonymous]
-    public async Task<Response<bool>> Register(RegisterModel model)
+    public async Task<ResponseBase<bool>> Register(RegisterModel model)
     {
         if (string.IsNullOrWhiteSpace(model.Email) || string.IsNullOrWhiteSpace(model.Password))
-            return new Response<bool>(false, false, message: "Email and password cannot be empty!");
+            return new ResponseBase<bool>(false, false, message: "Email and password cannot be empty!");
 
         var accountExists = await _accountRepository
             .Table
             .AnyAsync(p => p.Email == model.Email);
         
         if(accountExists)
-            return new Response<bool>(false, false, message: "Account with given email already exists!");
+            return new ResponseBase<bool>(false, false, message: "Account with given email already exists!");
 
         var hashedPassword = AuthHelper.HashPassword(model.Password);
 
@@ -48,26 +48,26 @@ public class AuthenticationController : ControllerBase
 
         await _accountRepository.Create(account);
 
-        return new Response<bool>(true, true);
+        return new ResponseBase<bool>(true, true);
     }
 
     [HttpPost]
     [AllowAnonymous]
-    public async Task<Response<LoginResponseModel?>> Login(LoginModel model)
+    public async Task<ResponseBase<LoginResponseModel?>> Login(LoginModel model)
     {
         if (string.IsNullOrWhiteSpace(model.Email) || string.IsNullOrWhiteSpace(model.Password))
-            return new Response<LoginResponseModel?>(false, null, message: "Email and password cannot be empty.");
+            return new ResponseBase<LoginResponseModel?>(false, null, message: "Email and password cannot be empty.");
 
         var account = await _accountRepository
             .Table
             .FirstOrDefaultAsync(p => p.Email == model.Email);
 
         if (account == null || !AuthHelper.VerifyPassword(account.PasswordHash, model.Password))
-            return new Response<LoginResponseModel?> (false, null, message: "Email or password not valid.");
+            return new ResponseBase<LoginResponseModel?> (false, null, message: "Email or password not valid.");
 
         var tokenResponse = AuthHelper.GenerateToken(account, _configuration);
 
-        return new Response<LoginResponseModel?>(true, tokenResponse);
+        return new ResponseBase<LoginResponseModel?>(true, tokenResponse);
     }
 
 }

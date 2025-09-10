@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace InDream.Data
 {
-    public class TrackedItem : Entity
+    public class TrackedItem : EntityBase
     {
         public long AccountId { get; set; }
         [ForeignKey("AccountId")]

@@ -3,7 +3,7 @@ using InDream.Interfaces;
 
 namespace InDream.Data
 {
-    public class Account : Entity
+    public class Account : EntityBase
     {
         public string Email { get; set; }
         public string PasswordHash { get; set; }
