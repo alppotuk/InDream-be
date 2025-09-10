@@ -1,1 +1,10 @@
 .vs/
+[Bb]in/
+[Oo]bj/
+
+*.suo
+*.user
+*.pdb
+*.log
+
+*.nupkg
