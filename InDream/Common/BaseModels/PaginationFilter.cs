@@ -1,4 +1,4 @@
-﻿namespace InDream.Interfaces
+﻿namespace InDream.Common.BaseModels
 {
     public class PaginationFilter
     {
@@ -8,8 +8,8 @@
 
         public PaginationFilter()
         {
-            this.PageNumber = 1;
-            this.PageSize = 10;
+            PageNumber = 1;
+            PageSize = 10;
         }
     }
 }

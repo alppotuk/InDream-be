@@ -1,10 +1,11 @@
 
 
-using AngleSharp;
+using InDream.Common.Interfaces;
 using InDream.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Reflection;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +15,22 @@ var connectionString = configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<DataContext>(options =>
         options.UseSqlServer(connectionString));
 
+builder.Services.AddHttpClient();
+
+var assembly = Assembly.GetExecutingAssembly();
+var scopedServices = assembly.GetTypes()
+                .Where(t => t.IsClass && !t.IsAbstract && t.IsAssignableTo(typeof(IInjectAsScoped)));
+
+foreach (var service in scopedServices)
+{
+    var serviceInterface = service.GetInterfaces()
+        .FirstOrDefault(i => i != typeof(IInjectAsScoped));
+
+    if (serviceInterface == null)
+        builder.Services.AddScoped(service);
+    else
+        builder.Services.AddScoped(serviceInterface, service);
+}
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -65,12 +82,6 @@ builder.Services.AddAuthentication(options =>
 
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-
-builder.Services.AddScoped<IBrowsingContext>(provider =>
-{
-    var config = Configuration.Default.WithDefaultLoader();
-    return BrowsingContext.New(config);
-});
 
 
 var app = builder.Build();

@@ -1,8 +1,8 @@
-﻿using AngleSharp;
-using AngleSharp.Dom;
+﻿using InDream.Common.BaseModels;
 using InDream.Data;
-using InDream.Interfaces;
-using InDream.Models;
+using InDream.Factories;
+using InDream.Models.SiteScraper;
+using InDream.Models.TrackedItem;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -16,12 +16,12 @@ namespace InDream.Controllers;
 public class TrackedItemController : BaseController
 {
     private readonly IRepository<TrackedItem> _trackedItemRepository;
-    private readonly IBrowsingContext _context;
+    private readonly ScraperFactory _scraperFactory;
 
-    public TrackedItemController(IRepository<TrackedItem> trackedItemRepository, IBrowsingContext context)
+    public TrackedItemController(IRepository<TrackedItem> trackedItemRepository, ScraperFactory scraperFactory)
     {
         _trackedItemRepository = trackedItemRepository;
-        _context = context;
+        _scraperFactory = scraperFactory;
     }
 
 
@@ -70,101 +70,20 @@ public class TrackedItemController : BaseController
 
     [HttpGet]
     [AllowAnonymous]
-    public async Task<ResponseBase<TrackedItemInfoFromUrlResponseModel?>> TrackedItemInfoFromUrl(string url)
+    public async Task<ResponseBase<ScrapedProductModel?>> TrackedItemInfoFromUrl(string url)
     {
         if (string.IsNullOrWhiteSpace(url))
-            return new ResponseBase<TrackedItemInfoFromUrlResponseModel?>(false, null);
+            return new ResponseBase<ScrapedProductModel?>(false, null);
 
-        try
-        {
-            await new BrowserFetcher().DownloadAsync();
+        var uri = new Uri(url);
+        var scraper = _scraperFactory.GetScraper(uri);
+        if(scraper == null)
+            return new ResponseBase<ScrapedProductModel?>(false, null, message: "This site is not supported.");
 
-            var launchOptions = new LaunchOptions
-            {
-                Headless = true,
-                Args = new[]
-                {
-                    "--no-sandbox",
-                    "--disable-setuid-sandbox",
-                    "--disable-infobars",
-                    "--window-position=0,0",
-                    "--ignore-certifcate-errors",
-                    "--ignore-certifcate-errors-spki-list"
-                }
-            };
 
-            using (var browser = await Puppeteer.LaunchAsync(launchOptions))
-            using (var page = await browser.NewPageAsync())
-            {
-                await page.SetUserAgentAsync(
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
-                    "(KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36"
-                );
+        var result = await scraper.ScrapeProductInfoAsync(url);
 
-                await page.GoToAsync(url, WaitUntilNavigation.Networkidle0);
-
-                var htmlContent = await page.GetContentAsync();
-                //await System.IO.File.WriteAllTextAsync("debug.html", htmlContent);
-
-                var imageUrl = await page.EvaluateFunctionAsync<string>(@"
-                    () => {
-                        const el = document.querySelector('meta[property=""og:image""]');
-                        return el ? el.getAttribute('content') : null;
-                    }
-                ");
-
-                var priceText = await page.EvaluateFunctionAsync<string>(@"
-                    () => {
-                        const selectors = [
-                            'meta[property=""product:price:amount""]',
-                            'meta[itemprop=""price""]',
-                            '.price',
-                            '.product-price',
-                            '.new-price',
-                            '#price',
-                            '#product-price',
-                            '#our_price_display'
-                        ];
-                        for (const sel of selectors) {
-                            const el = document.querySelector(sel);
-                            if (el) {
-                                return el.getAttribute('content') || el.textContent.trim();
-                            }
-                        }
-                        return null;
-                    }
-                ");
-
-                var stockText = await page.EvaluateFunctionAsync<string>(@"
-                    () => {
-                        const selectors = ['.stock', '#stock', '.availability'];
-                        for (const sel of selectors) {
-                            const el = document.querySelector(sel);
-                            if (el) {
-                                return el.getAttribute('content') || el.textContent.trim();
-                            }
-                        }
-                        return null;
-                    }
-                ");
-
-                var result = new TrackedItemInfoFromUrlResponseModel
-                {
-                    Url = url,
-                    ImageUrl = imageUrl,
-                    PriceText = priceText,
-                    StockText = stockText
-                };
-
-                return new ResponseBase<TrackedItemInfoFromUrlResponseModel?>(true, result);
-            }
-
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Scraping error: {url} - {ex.Message}");
-            return new ResponseBase<TrackedItemInfoFromUrlResponseModel?>(false, null, message: ex.Message);
-        }
+        return result;
     }
 
     [HttpPost]
@@ -228,35 +147,6 @@ public class TrackedItemController : BaseController
         await _trackedItemRepository.Delete(trackedItem);
 
         return new ResponseBase<bool>(true, true);
-    }
-
-
-
-    private string? TryGetValue(IDocument document, IEnumerable<string> selectors, string attribute = "content", bool getTextContentFallback = false)
-    {
-        foreach (var selector in selectors)
-        {
-            var element = document.QuerySelector(selector);
-            if (element != null)
-            {
-                string? value = null;
-                if (attribute != "content" || element.HasAttribute(attribute))
-                {
-                    value = element.GetAttribute(attribute);
-                }
-
-                if (string.IsNullOrWhiteSpace(value) && getTextContentFallback)
-                {
-                    value = element.TextContent;
-                }
-
-                if (!string.IsNullOrWhiteSpace(value))
-                {
-                    return value.Trim();
-                }
-            }
-        }
-        return null; 
     }
 
 }

@@ -1,4 +1,4 @@
-﻿using InDream.Interfaces;
+﻿using InDream.Common.BaseModels;
 using Microsoft.EntityFrameworkCore;
 
 public static class QueryableExtensions

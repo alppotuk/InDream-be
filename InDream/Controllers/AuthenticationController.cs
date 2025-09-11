@@ -1,8 +1,8 @@
-﻿using InDream.Common.Helpers;
+﻿using InDream.Common.BaseModels;
+using InDream.Common.Helpers;
 using InDream.Data;
 using InDream.Enumeration;
-using InDream.Interfaces;
-using InDream.Models;
+using InDream.Models.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

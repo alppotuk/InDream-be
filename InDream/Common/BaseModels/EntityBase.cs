@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace InDream.Interfaces
+namespace InDream.Common.BaseModels
 {
     public class EntityBase
     {

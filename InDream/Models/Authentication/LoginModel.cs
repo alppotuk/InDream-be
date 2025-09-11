@@ -1,4 +1,4 @@
-﻿namespace InDream.Models;
+﻿namespace InDream.Models.Authentication;
 
 public class LoginModel
 {

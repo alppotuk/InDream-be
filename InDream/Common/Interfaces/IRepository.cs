@@ -1,4 +1,4 @@
-﻿using InDream.Interfaces;
+﻿using InDream.Common.BaseModels;
 using System.Linq.Expressions;
 
 public interface IRepository<T> where T : EntityBase

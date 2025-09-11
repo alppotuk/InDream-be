@@ -1,4 +1,4 @@
-﻿namespace InDream.Models;
+﻿namespace InDream.Models.TrackedItem;
 public class TrackedItemCreateModel
 {
     public string Url { get; set; }

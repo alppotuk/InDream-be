@@ -1,4 +1,4 @@
-﻿namespace InDream.Interfaces
+﻿namespace InDream.Common.BaseModels
 {
     public class ResponseBase<T>
     {

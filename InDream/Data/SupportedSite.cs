@@ -1,4 +1,4 @@
-﻿using InDream.Interfaces;
+﻿using InDream.Common.BaseModels;
 
 namespace InDream.Data
 {

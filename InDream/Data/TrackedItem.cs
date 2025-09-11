@@ -1,4 +1,4 @@
-﻿using InDream.Interfaces;
+﻿using InDream.Common.BaseModels;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 

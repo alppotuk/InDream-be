@@ -1,5 +1,5 @@
-﻿using InDream.Enumeration;
-using InDream.Interfaces;
+﻿using InDream.Common.BaseModels;
+using InDream.Enumeration;
 
 namespace InDream.Data
 {

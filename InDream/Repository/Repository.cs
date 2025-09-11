@@ -1,5 +1,5 @@
-﻿using InDream.Data;
-using InDream.Interfaces;
+﻿using InDream.Common.BaseModels;
+using InDream.Data;
 using Microsoft.EntityFrameworkCore;
 
 public class Repository<T> : IRepository<T> where T : EntityBase

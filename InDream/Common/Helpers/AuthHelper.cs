@@ -1,5 +1,5 @@
 ﻿using InDream.Data;
-using InDream.Models;
+using InDream.Models.Authentication;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
