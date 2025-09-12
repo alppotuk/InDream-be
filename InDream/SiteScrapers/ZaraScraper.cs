@@ -1,7 +1,6 @@
 ﻿using InDream.Common.BaseModels;
 using InDream.Common.Interfaces;
 using InDream.Models.SiteScraper;
-using InDream.Models.SiteScraper.Zara;
 using System.Text.Json;
 
 namespace InDream.SiteScrapers;
@@ -22,57 +21,65 @@ public class ZaraScraper : ISiteScraper, IInjectAsScoped
 
     public async Task<ResponseBase<ScrapedProductModel?>> ScrapeProductInfoAsync(string url)
     {
-        var apiUrl = new UriBuilder(url)
+        try
         {
-            Query = (new Uri(url).Query.TrimStart('?') + "&ajax=true").TrimStart('&')
-        }.Uri.ToString();
-
-        var client = _httpClientFactory.CreateClient();
-
-        client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
-
-        var response = await client.GetAsync(apiUrl);
-
-        if (!response.IsSuccessStatusCode)
-            return new ResponseBase<ScrapedProductModel?>(false, null);
-
-        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-        var zaraResponse = await JsonSerializer.DeserializeAsync<ZaraProductResponse>(await response.Content.ReadAsStreamAsync(), options);
-
-        if (zaraResponse?.Product == null)
-            return new ResponseBase<ScrapedProductModel?>(false, null);
-
-        var product = zaraResponse.Product;
-        var scrapedProduct = new ScrapedProductModel
-        {
-            Title = product.Name ?? ""
-        };
-
-        foreach (var color in product.Detail?.Colors ?? Enumerable.Empty<ZaraColor>())
-        {
-            if (string.IsNullOrEmpty(scrapedProduct.ImageUrl))
+            var apiUrl = new UriBuilder(url)
             {
-                var imageUrl = color.MainImgs?.FirstOrDefault()?.Url;
-                if (!string.IsNullOrEmpty(imageUrl))
-                    scrapedProduct.ImageUrl = imageUrl;
-            }
+                Query = (new Uri(url).Query.TrimStart('?') + "&ajax=true").TrimStart('&')
+            }.Uri.ToString();
 
-            foreach (var size in color.Sizes ?? Enumerable.Empty<ZaraSize>())
+            var client = _httpClientFactory.CreateClient();
+
+            client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
+
+            var response = await client.GetAsync(apiUrl);
+
+            if (!response.IsSuccessStatusCode)
+                return new ResponseBase<ScrapedProductModel?>(false, null);
+
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            var zaraResponse = await JsonSerializer.DeserializeAsync<ZaraProductResponse>(await response.Content.ReadAsStreamAsync(), options);
+
+            if (zaraResponse?.Product == null)
+                return new ResponseBase<ScrapedProductModel?>(false, null);
+
+            var product = zaraResponse.Product;
+            var scrapedProduct = new ScrapedProductModel
             {
-                var info = new ScrapedProdutPropertiesModel
+                Title = product.Name ?? ""
+            };
+
+            foreach (var color in product.Detail?.Colors ?? Enumerable.Empty<ZaraColor>())
+            {
+                if (string.IsNullOrEmpty(scrapedProduct.ImageUrl))
                 {
-                    Price = (decimal)size.Price / 100,
-                    IsInStock = size.Availability == "in_stock",
-                    PropertyTexts = new List<string>
-                        {
-                            color.Name ?? "Unknown Color",
-                            size.Name ?? "Unknown Size"
-                        }
-                };
-                scrapedProduct.Properties.Add(info);
-            }
-        }
+                    var imageUrl = color.MainImgs?.FirstOrDefault()?.Url;
+                    if (!string.IsNullOrEmpty(imageUrl))
+                        scrapedProduct.ImageUrl = imageUrl;
+                }
 
-        return new ResponseBase<ScrapedProductModel?>(true, scrapedProduct); ;
+                foreach (var size in color.Sizes ?? Enumerable.Empty<ZaraSize>())
+                {
+                    var info = new ScrapedProductPropertiesModel
+                    {
+                        Price = (decimal)size.Price / 100,
+                        IsInStock = size.Availability == "in_stock",
+                        PropertyTexts = new List<string>
+                            {
+                                color.Name ?? "Unknown Color",
+                                size.Name ?? "Unknown Size"
+                            }
+                    };
+                    scrapedProduct.Properties.Add(info);
+                }
+            }
+
+            return new ResponseBase<ScrapedProductModel?>(true, scrapedProduct);
+        }
+        catch (Exception ex)
+        {
+            //TODO : mail to admin
+            return new ResponseBase<ScrapedProductModel?>(false, null);
+        }
     }
 }

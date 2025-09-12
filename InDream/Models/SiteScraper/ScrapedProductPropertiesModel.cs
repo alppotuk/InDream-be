@@ -1,6 +1,6 @@
 ﻿namespace InDream.Models.SiteScraper;
 
-public class ScrapedProdutPropertiesModel
+public class ScrapedProductPropertiesModel
 {
     public decimal Price { get; set; }
     public bool IsInStock { get; set; }

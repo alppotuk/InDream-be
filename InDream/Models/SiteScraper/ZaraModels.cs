@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace InDream.Models.SiteScraper.Zara;
+namespace InDream.Models.SiteScraper;
 
 public class ZaraProductResponse
 {
