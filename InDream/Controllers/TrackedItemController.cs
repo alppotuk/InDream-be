@@ -3,11 +3,11 @@ using InDream.Data;
 using InDream.Factories;
 using InDream.Models.SiteScraper;
 using InDream.Models.TrackedItem;
+using InDream.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using PuppeteerSharp;
-using System;
+using Newtonsoft.Json;
 
 namespace InDream.Controllers;
 
@@ -17,11 +17,13 @@ public class TrackedItemController : BaseController
 {
     private readonly IRepository<TrackedItem> _trackedItemRepository;
     private readonly ScraperFactory _scraperFactory;
+    private readonly EmailService _emailService;
 
-    public TrackedItemController(IRepository<TrackedItem> trackedItemRepository, ScraperFactory scraperFactory)
+    public TrackedItemController(IRepository<TrackedItem> trackedItemRepository, ScraperFactory scraperFactory, EmailService emailService)
     {
         _trackedItemRepository = trackedItemRepository;
         _scraperFactory = scraperFactory;
+        _emailService = emailService;
     }
 
 
@@ -38,8 +40,8 @@ public class TrackedItemController : BaseController
                 Title = p.Title,
                 ImageUrl = p.ImageUrl,
                 PriceText = p.ImageUrl,
-                StockText = p.StockText,
-                LastTimeChecked = p.LastTimeChecked
+                IsInStock = p.IsInStock,
+                LastCheckedUtc = p.LastCheckedUtc
             }).ToPagerAsync(filter);
 
         return new ResponseBase<List<TrackedItemModel>>(true, pagedData, pagination) ;
@@ -58,8 +60,8 @@ public class TrackedItemController : BaseController
                 Title = p.Title,
                 ImageUrl = p.ImageUrl,
                 PriceText = p.ImageUrl,
-                StockText = p.StockText,
-                LastTimeChecked = p.LastTimeChecked
+                IsInStock = p.IsInStock,
+                LastCheckedUtc = p.LastCheckedUtc
             }).FirstOrDefaultAsync();
 
         if (item == null)
@@ -93,7 +95,7 @@ public class TrackedItemController : BaseController
             || string.IsNullOrWhiteSpace(model.Title)
             || string.IsNullOrWhiteSpace(model.ImageUrl)
             || string.IsNullOrWhiteSpace(model.PriceText)
-            || string.IsNullOrWhiteSpace(model.StockText))
+            || !model.PropertyTexts.Any())
             return new ResponseBase<TrackedItemModel?>(false, null);
 
         var trackedItem = new TrackedItem
@@ -102,12 +104,10 @@ public class TrackedItemController : BaseController
             Url = model.Url,
             Title = model.Title,
             ImageUrl = model.ImageUrl,
+            Price = model.Price,
             PriceText = model.PriceText,
-            StockText = model.StockText,
-            TitleCssSelector = model.TitleCssSelector,
-            ImageUrlCssSelector = model.ImageUrlCssSelector,
-            PriceCssSelector = model.PriceCssSelector,
-            StockTextCssSelector = model.StockTextCssSelector,
+            IsInStock = model.IsInStock,
+            PropertiesSerialized = JsonConvert.SerializeObject(model.PropertyTexts),
             IsActive = true,
             CreationDateUtc = DateTime.UtcNow,
         };
@@ -147,6 +147,20 @@ public class TrackedItemController : BaseController
         await _trackedItemRepository.Delete(trackedItem);
 
         return new ResponseBase<bool>(true, true);
+    }
+
+
+    [HttpGet]
+    [AllowAnonymous]
+    public async Task<IActionResult> SendTestEmail()
+    {
+        await _emailService.SendEmailAsync(
+            "metealppotuk@gmail.com",
+            "Deneme Konu",
+            "<h1>Merhaba!</h1><p>Bu bir test mailidir.</p>"
+        );
+
+        return Ok("Mail gönderildi!");
     }
 
 }

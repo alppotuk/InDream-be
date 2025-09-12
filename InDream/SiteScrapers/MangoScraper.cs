@@ -1,8 +1,9 @@
 ﻿using AngleSharp;
+using AngleSharp.Dom;
+using AngleSharp.Html.Parser;
 using InDream.Common.BaseModels;
 using InDream.Common.Interfaces;
 using InDream.Models.SiteScraper;
-using System;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
@@ -36,9 +37,11 @@ public class MangoScraper : ISiteScraper, IInjectAsScoped
                 return new ResponseBase<ScrapedProductModel?>(false, null);
 
             var htmlContent = await mainPageResponse.Content.ReadAsStringAsync();
-            var context = BrowsingContext.New(Configuration.Default);
-            var document = await context.OpenAsync(req => req.Content(htmlContent));
+            //var context = BrowsingContext.New(Configuration.Default);
+            //var document = await context.OpenAsync(req => req.Content(htmlContent));
 
+            var parser = new HtmlParser();
+            var document = await parser.ParseDocumentAsync(htmlContent);
 
             var titleElement = document.QuerySelector("h1[class*='ProductDetail_title']");
             var title = titleElement?.TextContent.Trim() ?? "Başlık Bulunamadı";

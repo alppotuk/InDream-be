@@ -11,8 +11,8 @@ namespace InDream.Models.TrackedItem
         public string Title { get; set; }
         public string ImageUrl { get; set; }
         public string PriceText { get; set; }
-        public string StockText { get; set; }
+        public bool IsInStock { get; set; }
 
-        public DateTime LastTimeChecked { get; set; }
+        public DateTime LastCheckedUtc { get; set; }
     }
 }

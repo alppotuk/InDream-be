@@ -1,6 +1,7 @@
 
 
 using InDream.Common.Interfaces;
+using InDream.Configuration;
 using InDream.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +17,10 @@ builder.Services.AddDbContext<DataContext>(options =>
         options.UseSqlServer(connectionString));
 
 builder.Services.AddHttpClient();
+
+builder.Services.Configure<EmailSettings>(
+    builder.Configuration.GetSection("EmailSettings")
+);
 
 var assembly = Assembly.GetExecutingAssembly();
 var scopedServices = assembly.GetTypes()

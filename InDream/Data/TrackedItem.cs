@@ -15,23 +15,16 @@ namespace InDream.Data
         [MaxLength(100)]
         public string Title { get; set; }
         public string ImageUrl { get; set; }
+        public decimal Price { get; set; }
         [MaxLength(50)]
         public string PriceText { get; set; }
-        [MaxLength(50)]
-        public string StockText { get; set; }
+
+        public bool IsInStock { get; set; }
+
+        public string PropertiesSerialized { get; set; }
 
 
-
-        [MaxLength(50)]
-        public string? TitleCssSelector { get; set; }
-        [MaxLength(50)]
-        public string? ImageUrlCssSelector { get; set; }
-        [MaxLength(50)]
-        public string? PriceCssSelector { get; set; }
-        [MaxLength(50)]
-        public string? StockTextCssSelector { get; set; }
-
-        public DateTime LastTimeChecked { get; set; }
+        public DateTime LastCheckedUtc { get; set; }
 
         public bool IsActive { get; set; }
 
