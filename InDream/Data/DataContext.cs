@@ -8,7 +8,6 @@ public class DataContext : DbContext
 
     public DbSet<Account> Accounts { get; set; }
     public DbSet<TrackedItem> TrackedItems { get; set; }
-    public DbSet<SupportedSite> SupportedSites { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

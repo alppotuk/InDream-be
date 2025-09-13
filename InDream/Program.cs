@@ -3,6 +3,7 @@
 using InDream.Common.Interfaces;
 using InDream.Configuration;
 using InDream.Data;
+using InDream.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -85,7 +86,7 @@ builder.Services.AddAuthentication(options =>
 });
 
 
-
+builder.Services.AddHostedService<ScheduledScrapingService>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
 

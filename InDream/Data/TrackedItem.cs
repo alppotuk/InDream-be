@@ -17,7 +17,7 @@ namespace InDream.Data
         public string ImageUrl { get; set; }
         public decimal Price { get; set; }
         [MaxLength(50)]
-        public string PriceText { get; set; }
+        public string? CurrencyCode { get; set; }
 
         public bool IsInStock { get; set; }
 

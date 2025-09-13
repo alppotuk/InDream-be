@@ -39,7 +39,8 @@ public class TrackedItemController : BaseController
                 Url = p.Url,
                 Title = p.Title,
                 ImageUrl = p.ImageUrl,
-                PriceText = p.ImageUrl,
+                Price = p.Price,
+                CurrencyCode = p.CurrencyCode,
                 IsInStock = p.IsInStock,
                 LastCheckedUtc = p.LastCheckedUtc
             }).ToPagerAsync(filter);
@@ -59,7 +60,8 @@ public class TrackedItemController : BaseController
                 Url = p.Url,
                 Title = p.Title,
                 ImageUrl = p.ImageUrl,
-                PriceText = p.ImageUrl,
+                Price = p.Price,
+                CurrencyCode = p.CurrencyCode,
                 IsInStock = p.IsInStock,
                 LastCheckedUtc = p.LastCheckedUtc
             }).FirstOrDefaultAsync();
@@ -94,7 +96,7 @@ public class TrackedItemController : BaseController
         if (string.IsNullOrWhiteSpace(model.Url)
             || string.IsNullOrWhiteSpace(model.Title)
             || string.IsNullOrWhiteSpace(model.ImageUrl)
-            || string.IsNullOrWhiteSpace(model.PriceText)
+            || model.Price == 0
             || !model.PropertyTexts.Any())
             return new ResponseBase<TrackedItemModel?>(false, null);
 
@@ -105,10 +107,11 @@ public class TrackedItemController : BaseController
             Title = model.Title,
             ImageUrl = model.ImageUrl,
             Price = model.Price,
-            PriceText = model.PriceText,
+            CurrencyCode = model.CurrencyCode,
             IsInStock = model.IsInStock,
             PropertiesSerialized = JsonConvert.SerializeObject(model.PropertyTexts),
             IsActive = true,
+            LastCheckedUtc = DateTime.UtcNow,
             CreationDateUtc = DateTime.UtcNow,
         };
 

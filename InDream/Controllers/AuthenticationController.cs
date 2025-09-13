@@ -6,6 +6,7 @@ using InDream.Models.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 
 namespace InDream.Controllers;
 
@@ -28,6 +29,22 @@ public class AuthenticationController : ControllerBase
     {
         if (string.IsNullOrWhiteSpace(model.Email) || string.IsNullOrWhiteSpace(model.Password))
             return new ResponseBase<bool>(false, false, message: "Email and password cannot be empty!");
+
+        var emailRegex = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
+        if (!emailRegex.IsMatch(model.Email))
+            return new ResponseBase<bool>(false, false, message: "Invalid email format!");
+
+        if (model.Password.Length < 8)
+            return new ResponseBase<bool>(false, false, message: "Password must be at least 8 characters!");
+
+        if (!model.Password.Any(char.IsUpper))
+            return new ResponseBase<bool>(false, false, message: "Password must contain at least one uppercase letter!");
+
+        if (!model.Password.Any(char.IsLower))
+            return new ResponseBase<bool>(false, false, message: "Password must contain at least one lowercase letter!");
+
+        if (!model.Password.Any(char.IsDigit))
+            return new ResponseBase<bool>(false, false, message: "Password must contain at least one digit!");
 
         var accountExists = await _accountRepository
             .Table
