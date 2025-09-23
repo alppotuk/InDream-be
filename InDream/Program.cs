@@ -1,8 +1,9 @@
 
 
-using InDream.Common.Interfaces;
-using InDream.Configuration;
-using InDream.Data;
+using InDream.Api.Common.Data;
+using InDream.Common.Configuration;
+using InDream.Core.DI;
+using InDream.Core.Repository;
 using InDream.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,9 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
+
+builder.Services.AddScoped<DbContext, DataContext>();
+
 
 var connectionString = configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<DataContext>(options =>
@@ -89,6 +93,16 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddHostedService<ScheduledScrapingService>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowExtension", policy =>
+    {
+        policy.WithOrigins("chrome-extension://cdlbhdidphhdmdnnljjjhhhjkgdmdccf")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 
 var app = builder.Build();
 
@@ -100,9 +114,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-//app.UseAuthentication();
-//app.UseAuthorization();
+app.UseCors("AllowExtension");
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
+
 
 app.Run();

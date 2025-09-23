@@ -1,5 +1,5 @@
-﻿using InDream.Common.Interfaces;
-using InDream.Configuration;
+﻿using InDream.Common.Configuration;
+using InDream.Core.DI;
 using Microsoft.Extensions.Options;
 using System.Net;
 using System.Net.Mail;

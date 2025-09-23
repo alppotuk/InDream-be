@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36401.2 d17.14
+VisualStudioVersion = 17.14.36401.2
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InDream", "InDream.csproj", "{496CA200-E154-4ED9-B486-300BA3FFBF54}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InDream.Api", "InDream.Api.csproj", "{496CA200-E154-4ED9-B486-300BA3FFBF54}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InDream.Core", "..\InDream.Core\InDream.Core.csproj", "{3FCEB09D-5ADE-4BCC-B039-5EB3BDBDF6F5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{496CA200-E154-4ED9-B486-300BA3FFBF54}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{496CA200-E154-4ED9-B486-300BA3FFBF54}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{496CA200-E154-4ED9-B486-300BA3FFBF54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FCEB09D-5ADE-4BCC-B039-5EB3BDBDF6F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FCEB09D-5ADE-4BCC-B039-5EB3BDBDF6F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FCEB09D-5ADE-4BCC-B039-5EB3BDBDF6F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FCEB09D-5ADE-4BCC-B039-5EB3BDBDF6F5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

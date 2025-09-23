@@ -1,5 +1,5 @@
-﻿using InDream.Data;
-using InDream.Models.Authentication;
+﻿using InDream.Api.Features.Authentication.Data;
+using InDream.Api.Features.Authentication.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -31,8 +31,9 @@ public static class AuthHelper
 
         var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, account.Id.ToString()), 
-                new Claim(ClaimTypes.Email, account.Email), 
+                new Claim(ClaimTypes.NameIdentifier, account.Id.ToString()),
+                new Claim(ClaimTypes.Email, account.Email),
+                new Claim("languageCode", account.LanguageCode ?? "en")
             };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));

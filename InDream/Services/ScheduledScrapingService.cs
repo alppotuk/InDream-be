@@ -1,6 +1,7 @@
-﻿
-using InDream.Data;
-using InDream.Factories;
+﻿using InDream.Api.Features.Authentication.Data;
+using InDream.Api.Features.Tracking.Data;
+using InDream.Core.Repository;
+using InDream.Features.Tracking.Services;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
@@ -17,7 +18,7 @@ public class ScheduledScrapingService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        using var timer = new PeriodicTimer(TimeSpan.FromMinutes(5));
+        using var timer = new PeriodicTimer(TimeSpan.FromMinutes(50));
 
         while (await timer.WaitForNextTickAsync(stoppingToken))
         {
